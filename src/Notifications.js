@@ -6,19 +6,21 @@ const Notifications = () => {
 
     const [notifications, setNotifications] = useState([]);
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            const response = await fetch('/api/notifications');
-            if(response.ok) {
-                const data = await response.json();
-                data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                setNotifications(data);
-            } else {
-                alert('Failed to fetch notifications');
-            }
-        };
+    const fetchNotifications = async () => {
+        const response = await fetch('/api/notifications');
+        if(response.ok) {
+            const data = await response.json();
+            data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            setNotifications(data);
+        } else {
+            alert('Failed to fetch notifications');
+        }
+    };
 
+    useEffect(() => {
         fetchNotifications();
+        const interval = setInterval(fetchNotifications, 4000);
+        return () => clearInterval(interval);
     }, []);
 
     const getBackgroundColor = (type) => {
@@ -46,7 +48,8 @@ const Notifications = () => {
         if (response.ok) {
             alert('Notification created');
             setType('');
-            setText('');  
+            setText('');
+            fetchNotifications();
         } else {
             alert('Failed to create notification');
         }
