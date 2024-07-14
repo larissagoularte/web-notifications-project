@@ -84,9 +84,9 @@ const Notifications = () => {
                 <div id="notification-feed" className='bg-neutral-100 rounded-lg p-5 h-[400px]'>
                     {notifications.map((notification) => (
                         <div id='notification-card' key={notification.id} className='flex flex-col p-4 gap-[10px]' style={{ backgroundColor: getBackgroundColor(notification.type) }}>
-                            <div className='text-sm'>{notification.content.text}</div>
+                            <div>{notification.content.text}</div>
 
-                            <div className='text-xs opacity-80'>
+                            <div className='opacity-80'>
                                 {new Date(notification.timestamp).toLocaleString()}
                             </div>
 
