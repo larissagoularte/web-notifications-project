@@ -1,8 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Notifications = () => {
     const [type, setType] = useState('');
     const [text, setText] = useState('');
+
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            const response = await fetch('/api/notifications');
+            if(response.ok) {
+                const data = await response.json();
+                data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                setNotifications(data);
+            } else {
+                alert('Failed to fetch notifications');
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
+    const getBackgroundColor = (type) => {
+        switch (type) {
+            case 'Alert':
+                return '#ffcccb';
+            case 'Success':
+                return '#add8e6';
+            case 'Info':
+                return '#90ee90';
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,12 +53,11 @@ const Notifications = () => {
     };
 
     return (
-        <div
-         className="w-full flex lg:flex-row flex-col gap-[20px]">
+        <div className="w-full flex lg:flex-row flex-col gap-[20px]">
       
             <div id="form-container" className="md:w-1/2 bg-white md:py-10 md:pl-10">
 
-                <div className="bg-neutral-100 rounded-lg p-5">
+                <div className="bg-neutral-100 rounded-lg p-5 h-[400px]">
 
                     <h2 className="text-3xl font-medium mb-6">Create Notification</h2>
                     
@@ -53,8 +80,20 @@ const Notifications = () => {
 
             </div>
 
-            <div className="feed-container md:w-1/2 bg-red-500">
-            feed
+            <div className="feed-container md:w-1/2 bg-white md:py-10 md:pr-10">
+                <div id="notification-feed" className='bg-neutral-100 rounded-lg p-5 h-[400px]'>
+                    {notifications.map((notification) => (
+                        <div id='notification-card' key={notification.id} className='flex flex-col' style={{ backgroundColor: getBackgroundColor(notification.type) }}>
+                            <div className='text-sm'>{notification.content.text}</div>
+
+                            <div className='text-xs opacity-80'>
+                                {new Date(notification.timestamp).toLocaleString()}
+                            </div>
+
+                        </div>
+                    ))}
+                </div>
+
             </div>
       </div>
     )

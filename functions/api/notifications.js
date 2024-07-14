@@ -1,4 +1,4 @@
-export async function onRequest(context) {
+export async function onRequestPost(context) {
     const { request, env } = context;
     const body = await request.json();
 
@@ -35,4 +35,22 @@ export async function onRequest(context) {
 
     return new Response(response, { status: 201 });
 
+}
+
+export async function onRequestGet(context) {
+    const { env } = context;
+
+    const keys = await env.NOTIFICATIONS.list();
+    if(keys.keys.length === 0) {
+        return new Response(JSON.stringify([]), { status: 200 });
+    }
+
+    const notifications = await Promise.all(
+        keys.keys.map(async (key) => {
+            const notification = await env.NOTIFICATIONS.get(key.name, {type: 'json'});
+            return notification;
+        })
+    );
+
+    return new Response(JSON.stringify(notifications), {status: 200 });
 }
