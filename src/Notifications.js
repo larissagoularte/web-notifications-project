@@ -83,7 +83,7 @@ const Notifications = () => {
             <div className="feed-container md:w-1/2 bg-white md:py-10 md:pr-10">
                 <div id="notification-feed" className='bg-neutral-100 rounded-lg p-5 h-[400px]'>
                     {notifications.map((notification) => (
-                        <div id='notification-card' key={notification.id} className='flex flex-col p-4 gap-[10px]' style={{ backgroundColor: getBackgroundColor(notification.type) }}>
+                        <div id='notification-card' key={notification.id} className='h-[70px] flex flex-col p-4 gap-[10px]' style={{ backgroundColor: getBackgroundColor(notification.type) }}>
                             <div>{notification.content.text}</div>
 
                             <div className='opacity-80'>
